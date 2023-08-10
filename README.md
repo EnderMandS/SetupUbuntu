@@ -698,8 +698,8 @@ echo "source /opt/ros/melodic/setup.zsh" >> ~/.zshrc
 
 使用Clangd作为代码提示更快更准确，所以使用ROS扩展时禁用C/C++扩展，在工程下`tasks.json`文件中，添加以下行
 
-```json
+```shell
 -DCMAKE_EXPORT_COMPILE_COMMANDS=1
 ```
 
-重新编译ROS工作区生效
+重新编译ROS工作区使代码补全生效

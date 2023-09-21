@@ -46,7 +46,7 @@ Python版本小于3.8的必须更新。版本的选择取决于[Tensorflow匹配
 sudo add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
 sudo apt update
 sudo apt install git vim wget openssh-server net-tools tree pkg-config curl dkms rename -y
-sudo apt install build-essential cmake g++ gcc unzip python3-pip -y
+sudo apt install build-essential cmake g++ gcc unzip python3-pip apt-transport-https -y
 sudo apt install ninja-build clang clang-format clang-tidy libboost-all-dev libssl-dev -y
 sudo apt install libglew-dev libsdl2-dev libsdl2-image-dev libglm-dev libfreetype6-dev libwayland-dev libxkbcommon-dev wayland-protocols libeigen3-dev -y
 sudo apt install ffmpeg libavcodec-dev libavutil-dev libavformat-dev libswscale-dev libavdevice-dev libjpeg-dev libpng-dev libtiff5-dev libopenexr-dev libcanberra-gtk-module -y
@@ -66,7 +66,7 @@ sudo apt install openjdk-17-jdk -y
 sudo apt install terminator htop -y
 ```
 
-### GIT 设置
+### git设置
 
 ```shell
 git config --global user.email "you@example.com"
@@ -82,6 +82,8 @@ sudo apt install ibus ibus-gtk ibus-gtk3 ibus-pinyin -y
 安装完成后重启
 
 ### 配置SSH
+
+如果不需要远程控制跳过这一步
 
 开启SSH服务
 
@@ -130,7 +132,7 @@ Host your-host-name
 
 ### [Oh My Zsh](https://ohmyz.sh/)
 
-Oh My Zsh是一个zsh终端，美化终端提供输入历史记录和高亮等，还有许多终端主题可以更换
+Oh My Zsh是一个zsh终端，美化终端，提供输入历史记录和高亮等，还有许多终端主题可以更换
 
 ```shell
 sudo apt update
@@ -206,6 +208,7 @@ sudo rm /usr/bin/python3
 sudo ln -s /usr/local/python310/bin/python3.10 /usr/bin/python3
 sudo ln -s /usr/local/python310/bin/pip3.10 /usr/bin/pip310
 /usr/local/python310/bin/python3.10 -m pip install --upgrade pip
+echo 'export PATH=/usr/local/python310/bin:$PATH' >> ~/.zshrc
 ```
 
 安装一些软件包
@@ -403,6 +406,8 @@ sudo cp -r share/ /usr
 
 ### (可选) LAPACK
 
+如果不需要安装最新的SuitSparse从这个软件包开始以下可选的软件包可以跳过
+
 ```shell
 cd ~/pkg
 mkdir lapack && cd lapack
@@ -575,6 +580,8 @@ cd
 
 ### (可选) FBoW
 
+回环检测中的一种字典算法
+
 ```shell
 cd ~/pkg
 git clone https://github.com/rmsalinas/fbow.git
@@ -668,19 +675,15 @@ sudo ninja install
 ninja clean
 ```
 
-### [ORB SLAM3](https://github.com/UZ-SLAMLab/ORB_SLAM3)
+### [Intel RealSense Lib](https://github.com/IntelRealSense/librealsense)
 
 ```shell
-cd ~/pkg
-git clone https://github.com/UZ-SLAMLab/ORB_SLAM3.git ORB_SLAM3
-cd ORB_SLAM3 && chmod +x build.sh
-gedit CMakeLists.txt
-```
-
-添加C++14编译标准`add add_compile_options(-std=c++14)`
-
-```shell
-./build.sh
+sudo mkdir -p /etc/apt/keyrings
+curl -sSf https://librealsense.intel.com/Debian/librealsense.pgp | sudo tee /etc/apt/keyrings/librealsense.pgp > /dev/null
+echo "deb [signed-by=/etc/apt/keyrings/librealsense.pgp] https://librealsense.intel.com/Debian/apt-repo `lsb_release -cs` main" | \
+sudo tee /etc/apt/sources.list.d/librealsense.list
+sudo apt update
+sudo apt install librealsense2-dkms librealsense2-utils librealsense2-dev librealsense2-dbg -y
 ```
 
 ### ROS
@@ -690,13 +693,31 @@ gedit CMakeLists.txt
 ```shell
 wget http://fishros.com/install -O fishros && . fishros
 echo "source /opt/ros/melodic/setup.zsh" >> ~/.zshrc
+pip3 install rosdepc
+rosdepc init
+```
+
+### [ORB SLAM3](https://github.com/UZ-SLAMLab/ORB_SLAM3)
+
+```shell
+cd ~/pkg
+git clone https://github.com/UZ-SLAMLab/ORB_SLAM3.git ORB_SLAM3
+cd ORB_SLAM3 && chmod +x build.sh
+gedit CMakeLists.txt
+```
+
+添加C++14编译标准`add_compile_options(-std=c++14)`
+
+```shell
+./build.sh
+./build_ros.sh
 ```
 
 ### [VSCode](https://code.visualstudio.com/)
 
 安装以下扩展`cmake`, `clangd`, `ros`, `codelldb`, `docker`, `jupyter`, `black formatter`
 
-使用Clangd作为代码提示更快更准确，所以使用ROS扩展时禁用C/C++扩展，在工程下`tasks.json`文件中，添加以下行
+使用Clangd作为代码提示更快更准确，ROS扩展搭配使用的C/C++扩展和Clangd冲突，使用ROS扩展时禁用C/C++扩展。在工程下`tasks.json`文件中，添加以下行
 
 ```shell
 -DCMAKE_EXPORT_COMPILE_COMMANDS=1

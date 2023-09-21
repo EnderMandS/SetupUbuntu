@@ -1,0 +1,58 @@
+cmake_minimum_required(VERSION 3.5 VERSION 3.27)
+
+set(CMAKE_CXX_STANDARD 17)
+
+# Eigen3
+find_package(Eigen3 REQUIRED)
+include_directories(${EIGEN3_INCLUDE_DIRS})
+
+# OpenCV
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
+# Boost
+find_package(Boost REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
+
+# g2o
+find_package(g2o REQUIRED)
+set(g2o_LIBS g2o_cli g2o_core g2o_csparse_extension g2o_ext_freeglut_minimal g2o_hierarchical g2o_incremental g2o_interactive g2o_interface g2o_opengl_helper g2o_parser g2o_simulator g2o_solver_cholmod g2o_solver_csparse g2o_solver_dense g2o_solver_eigen g2o_solver_pcg g2o_solver_slam2d_linear g2o_solver_structure_only g2o_stuff g2o_types_data g2o_types_icp g2o_types_sba g2o_types_sclam2d g2o_types_sim3 g2o_types_slam2d_addons g2o_types_slam2d g2o_types_slam3d_addons g2o_types_slam3d g2o_viewer)
+
+# Ceres
+find_package(Ceres REQUIRED)
+# include_directories(${CERES_INCLUDE_DIRS})
+
+# Sophus
+find_package(Sophus REQUIRED)
+include_directories(/usr/local/include/sophus)
+
+# fbow
+find_package(fbow REQUIRED)
+include_directories(${fbow_INCLUDE_DIRS})
+
+# vtk
+find_package(VTK 9 REQUIRED)
+# PCL
+find_package(PCL 1.13.1 REQUIRED)
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
+
+# octomap
+find_package(octomap REQUIRED)
+include_directories(${OCTOMAP_INCLUDE_DIRS})
+
+# Pangolin
+find_package(Pangolin REQUIRED)
+include_directories(${Pangolin_INCLUDE_DIR})
+
+target_link_libraries(${PROJECT_NAME}
+  ${OpenCV_LIBS}
+  ${g2o_LIBS}
+  ${CERES_LIBRARIES}
+  ${fbow_LIBS}
+  ${PCL_LIBRARIES}
+  ${OCTOMAP_LIBRARIES}
+  ${Pangolin_LIBRARIES}
+	${Boost_LIBRARIES}
+  fmt)
